@@ -1,24 +1,28 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (Html, div, img)
-import Html.Attributes exposing (src, style)
+import Html.Styled exposing (Html, div, form, input, button, text)
+import Html.Styled.Attributes exposing (type_, value)
 
-type Msg = NoOp
+type Msg = UpdateNewToDo String
+type alias Model = {newToDo : String}
 
-main : Program () Int Msg
+main : Program () Model Msg
 main =
-    Browser.sandbox { init = 0, update = update, view = view }
+    Browser.sandbox { init = {newToDo = "Fazer atividade de SOA"}, update = update, view = view >> Html.Styled.toUnstyled }
 
 
-update : Msg -> number -> number
+update : Msg -> Model -> Model --o estado atual retorna um novo estado
 update msg model =
     case msg of
-        NoOp -> model
+        UpdateNewToDo toDo -> {model | newToDo = toDo} --injeta uma string no model e o atualiza
 
 
-view : Int -> Html Msg
+view : Model -> Html Msg
 view model =
     div []
-        [ img [ src "/src/assets/logo.png", style "width" "300px" ] []
+        [ Html.Styled.form [] [
+            input [type_ "text", value model.newToDo] []
+            , button [type_ "submit"] [text "Submit"]
+        ]
         ]
